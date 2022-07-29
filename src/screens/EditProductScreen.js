@@ -65,7 +65,7 @@ const EditProductScreen = (props) => {
         }else if(productData.phoneNumber === '' && productData.instagram === '' && productData.facebook === ''){
             alert("Please fill at least one seller contact !")
         }else{
-            if(updatedData.productName === productData.productName && updatedData.productImagePath === productData.productImagePath && updatedData.category === productData.category && updatedData.description === productData.description && updatedData.price === parseInt(updatedData.price) && updatedData.facebook === updatedData.facebook && updatedData.instagram === updatedData.instagram && updatedData.phoneNumber === productData.phoneNumber) {
+            if(updatedData.productName === productData.productName && updatedData.imagePath === productData.imagePath && updatedData.category === productData.category && updatedData.description === productData.description && updatedData.price === parseInt(updatedData.price) && updatedData.facebook === updatedData.facebook && updatedData.instagram === updatedData.instagram && updatedData.phoneNumber === productData.phoneNumber) {
                 Alert.alert("Nothing Change", "You did not change anything",
                 [{
                     text : "OK", onPress : () =>navigation.goBack()

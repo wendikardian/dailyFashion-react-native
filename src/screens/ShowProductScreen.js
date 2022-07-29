@@ -1,15 +1,17 @@
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet , Linking} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import realm from '../../store/realm'
-import {Icon} from 'react-native-elements'
+import {Icon, CheckBox} from 'react-native-elements'
 import {MediaComponent} from '../components/MediaComponent'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen-hooks'
+import {ButtonComponent} from '../components/ButtonComponent'
 
 const ShowProductScreen = (props) => {
     const {navigation} = props
     const {route} = props;
     const category = route.params.categoryId
     const [data, setData] = useState([])
+    const [isRemove, SetIsRemove] =useState(false)
     const [isBuy, setIsBuy] = useState(false)
     const [contact, setContact] = useState({
         phoneNumber : '',
@@ -26,7 +28,13 @@ const ShowProductScreen = (props) => {
     }
     const collectData = () => {
         const allData = realm.objects('Product').filtered(`category = ${category}`)
-        setData(allData)
+        const newData = allData.map((item) => {
+            item.checkedStatus = false;
+            return item
+        })
+
+        setData(newData)
+        console.log(data)
     }
     useEffect(()=> {
         const productPage = navigation.addListener('focus', ()=> {
@@ -45,11 +53,54 @@ const ShowProductScreen = (props) => {
             Linking.openURL(`https://m.me/${contact.facebook}`)
         }
     }
+
+    const setCheckBox = (id, status) => {
+        const newData =data.map ((item) => {
+            if(item.id === id){
+                item.checkedStatus = !status
+            }
+            return item;
+        })
+        setData(newData)
+    }
+
+    const onCancel = () => {
+        const newData = data.map((item) => {
+            item.checkedStatus = false
+            return item
+        })
+        setData(newData)
+        SetIsRemove(false)
+    }
+
+    const onDelete = () => {
+        const checkedTrue = []
+        data.forEach((item) => {
+            if(item.checkedStatus) {
+                checkedTrue.push(item.id)
+            }
+        });
+        if(checkedTrue.length !== 0) {
+            realm.write(() => {
+                for(i =0; i<checkedTrue.length; i++) {
+                    const removeData = realm.objects('Product').filtered(`id = ${checkedTrue[i]}`)
+                    realm.delete(removeData)
+                }
+            })
+            alert("Successfully remove the products !")
+            SetIsRemove(false)
+            collectData()
+        }else{
+            alert('Nothing to remove')
+        }
+    }
     return (
         <View style={styles.mainContainer}>
             <FlatList data={data} contentContainerStyle={styles.flatListContainer} keyExtractor={(item)=> item.id } renderItem = {({item}) => {
                 return(
-                    <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('EditProduct', {idProduct : item.id})} >
+                    <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('EditProduct', {idProduct : item.id})} 
+                    onLongPress={() =>SetIsRemove(true)}
+                    >
                         <View style={styles.productContainer}>
                             <TouchableOpacity onPress={() =>navigation.navigate("ImageZoom", {
                                 imagePath : item.imagePath
@@ -62,11 +113,20 @@ const ShowProductScreen = (props) => {
                                 <Text style={styles.text}>${item.price}</Text>
                             </View>
                         </View>
-                        <TouchableOpacity onPress={() => { 
-                            buyProduct(item.phoneNumber, item.instagram, item.facebook)
-                        }}>
-                            <Icon name="shoppingcart" type="antdesign" size={30} />
-                        </TouchableOpacity>
+                        {
+                            isRemove ? 
+                            <CheckBox size={30} containerStyle={styles.checkBox}
+                            onPress={() =>setCheckBox(item.id, item.checkedStatus)}
+                            checked={item.checkedStatus}
+                            />
+                            :
+                            <TouchableOpacity onPress={() => { 
+                                buyProduct(item.phoneNumber, item.instagram, item.facebook)
+                            }}>
+                                <Icon name="shoppingcart" type="antdesign" size={30} />
+                            </TouchableOpacity>
+                        }
+                        
                     </TouchableOpacity>
                 )
             }} 
@@ -116,6 +176,14 @@ const ShowProductScreen = (props) => {
                                 :null
                         }
                     </View>
+                </View>
+                : null
+            }
+            {
+                isRemove ? 
+                <View style={styles.buttonContainer}>
+                    <ButtonComponent backgroundColor="red" title="Delete" onPress={() => onDelete()} />
+                    <ButtonComponent backgroundColor="green" title="Cancel" onPress={() => onCancel()} />
                 </View>
                 : null
             }
@@ -177,6 +245,12 @@ const styles = StyleSheet.create({
     }, sellerText : {
         marginBottom : 8,
         marginTop : 32
+    }, checkBox : {
+        position: 'absolute',
+        right : 0
+    }, buttonContainer : {
+        flexDirection: 'row',
+        height : hp('7%')
     }
 })
 
