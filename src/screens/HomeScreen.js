@@ -3,7 +3,8 @@ import React from 'react'
 import {imageSlider, categoryList} from '../../data/Data'
 import {SliderBox} from 'react-native-image-slider-box'
 
-const HomeScreen = () => {
+const HomeScreen = (props) => {
+    const {navigation} = props
   return (
     <View style={styles.mainContainer}>
         <SliderBox images={imageSlider} autoplay={true} circleLoop={true} sliderBoxHeight={250} />
@@ -16,7 +17,7 @@ const HomeScreen = () => {
             data={categoryList} numColumns={3} keyExtractor={item => item.id} contentContainerStyle={styles.flatListContainer} showsVerticalScrollIndicator={false}
             renderItem={({item}) => {
                 return(
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={() =>navigation.navigate('ShowProduct', {categoryId : item.id})}>
                         <Image source={{uri : item.icon}} style={styles.icon} /> 
                         <Text style={styles.itemName}> {item.name}</Text>
                     </TouchableOpacity>
