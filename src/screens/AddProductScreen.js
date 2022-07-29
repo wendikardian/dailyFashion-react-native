@@ -115,10 +115,10 @@ const AddProductScreen = () => {
             </View>
             <View style={styles.horizontalContainer}>
                 <InputComponent placeholder="Product Description" value={productData.description} onChangeText={(text) => onInputChange('description', text)} isDescription={true} />
-                <InputComponent placeholder="Price" value={productData.price} onChangeText={(text) => onInputChange('price', text)} isIcon={true} name="dollar" type="font-awesome" />
+                <InputComponent placeholder="Price" keyboardType="numeric" value={productData.price} onChangeText={(text) => onInputChange('price', text)} isIcon={true} name="dollar" type="font-awesome" />
             </View>
             <Text style={styles.sellerText}> Seller Contact</Text>
-            <InputComponent placeholder="Whatsapp number (ex. +9123789213)" value={productData.phoneNumber} onChangeText={(text) => onInputChange('phoneNumber', text)} isIcon={true} name="whatsapp" type="font-awesome" />
+            <InputComponent keyboardType="numeric" placeholder="Whatsapp number (ex. +9123789213)" value={productData.phoneNumber} onChangeText={(text) => onInputChange('phoneNumber', text)} isIcon={true} name="whatsapp" type="font-awesome" />
             <InputComponent placeholder="Instagram username (ex. timedooracademy)" value={productData.instagram} onChangeText={(text) => onInputChange('instagram', text)} isIcon={true} name="instagram" type="font-awesome" />
             <InputComponent placeholder="Facebook username" value={productData.facebook} onChangeText={(text) => onInputChange("facebook", text)} isIcon={true} name="facebook-square" type="font-awesome"/>
             <View style={styles.buttonContainer}>

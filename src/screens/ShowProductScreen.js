@@ -49,7 +49,7 @@ const ShowProductScreen = (props) => {
         <View style={styles.mainContainer}>
             <FlatList data={data} contentContainerStyle={styles.flatListContainer} keyExtractor={(item)=> item.id } renderItem = {({item}) => {
                 return(
-                    <TouchableOpacity style={styles.itemButton}>
+                    <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('EditProduct', {idProduct : item.id})} >
                         <View style={styles.productContainer}>
                             <TouchableOpacity onPress={() =>navigation.navigate("ImageZoom", {
                                 imagePath : item.imagePath
