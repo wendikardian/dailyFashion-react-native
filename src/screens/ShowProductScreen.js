@@ -1,8 +1,9 @@
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet , Linking} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import realm from '../../store/realm'
 import {Icon} from 'react-native-elements'
 import {MediaComponent} from '../components/MediaComponent'
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen-hooks'
 
 const ShowProductScreen = (props) => {
     const {navigation} = props
@@ -31,16 +32,30 @@ const ShowProductScreen = (props) => {
         const productPage = navigation.addListener('focus', ()=> {
             collectData()
         })
+        console.log(data)
         return productPage
     }, [])
 
+    const onClickMedia =(type) => {
+        if(type === 'whatsapp'){
+            Linking.openURL(`https://wa.me/${contact.phoneNumber}`)
+        }else if(type=== 'instagram'){
+            Linking.openURL(`https://www.instagram.com/${contact.instagram}`)
+        }else if(type === 'facebook'){
+            Linking.openURL(`https://m.me/${contact.facebook}`)
+        }
+    }
     return (
         <View style={styles.mainContainer}>
             <FlatList data={data} contentContainerStyle={styles.flatListContainer} keyExtractor={(item)=> item.id } renderItem = {({item}) => {
                 return(
                     <TouchableOpacity style={styles.itemButton}>
                         <View style={styles.productContainer}>
-                            <Image style={styles.image} source={{uri: item.imagePath}} />
+                            <TouchableOpacity onPress={() =>navigation.navigate("ImageZoom", {
+                                imagePath : item.imagePath
+                            })}>
+                                <Image style={styles.image} source={{uri: item.imagePath}} />
+                            </TouchableOpacity>
                             <View style={styles.textContainer}>
                                 <Text style={styles.title}>{item.productName}</Text>
                                 <Text style={styles.text}>{item.description}</Text>
@@ -78,6 +93,7 @@ const ShowProductScreen = (props) => {
                                 <MediaComponent 
                                     source={require('../../assets/images/whatsapp.png')}
                                     value={contact.phoneNumber}
+                                    onPress={() => onClickMedia('whatsapp')}
                                 />
                                 :null
                         }
@@ -86,6 +102,7 @@ const ShowProductScreen = (props) => {
                                 <MediaComponent 
                                     source={require('../../assets/images/instagram.png')}
                                     value={contact.instagram}
+                                    onPress={() => onClickMedia('instagram')}
                                 />
                                 :null
                         }
@@ -94,6 +111,7 @@ const ShowProductScreen = (props) => {
                                 <MediaComponent 
                                     source={require('../../assets/images/facebook.png')}
                                     value={contact.facebook}
+                                    onPress={() => onClickMedia('facebook')}
                                 />
                                 :null
                         }
@@ -124,19 +142,19 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
     }, image : {
-        width: 100,
-        height: 100
+        width: wp('25%'),
+        height: wp('25%')
     }, textContainer : {
         flex: 1,
         marginLeft: 16,
         justifyContent: 'center'
     }, title : {
         color: 'black',
-        fontSize : 18,
+        fontSize : hp('2.5%'),
         fontWeight: 'bold'
     }, text : {
         color: 'black',
-        fontSize : 16
+        fontSize : hp('2%')
     }, modalContainer : {
         backgroundColor: 'rgba(255,255,255, 0.9)',
         position: 'absolute',

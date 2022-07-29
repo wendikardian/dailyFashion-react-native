@@ -5,6 +5,7 @@ import {InputComponent} from '../components/InputComponent'
 import {categoryList} from '../../data/Data'
 import SelectDropdown from 'react-native-select-dropdown'
 import realm from '../../store/realm'
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen-hooks'
 
 const AddProductScreen = () => {
     const [productData, setProductData] = useState({
@@ -88,8 +89,8 @@ const AddProductScreen = () => {
             <View style={styles.imageContainer}>
                 <TouchableOpacity style={styles.imageButton} onPress={() => addImage()}>
                     <Image style={{
-                        width: productData.imagePath !== '' ? 200 : 50,
-                         height: productData.imagePath !== '' ? 200 : 50
+                        width: productData.imagePath !== '' ? wp('50%') : 50,
+                         height: productData.imagePath !== '' ? wp('50%') : 50
                     }} source={{
                         uri : productData.imagePath !== '' ? productData.imagePath : 
                         'https://assets.webiconspng.com/uploads/2017/02/Photograph-Icon-PNG.png'
@@ -141,8 +142,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 8
     }, imageButton : {
-        width: 200,
-        height: 200,
+        width: wp('50%'),
+        height: wp('50%'),
         borderWidth: 0.5,
         justifyContent: 'center',
         alignItems: 'center',
@@ -168,12 +169,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         backgroundColor: 'mistyrose'
     }, saveText : {
-        color: 'black'
+        color: 'black',
+        fontSize : hp('2.5%')
     }, selectDropdown : {
         borderRadius : 10,
         backgroundColor: 'skyblue',
-        width: 150,
-        height: 30,
+        width: wp('40%'),
+        height: hp('4%'),
         marginLeft: 8
     }, selectDropdown : {
         borderRadius : 10,
@@ -182,7 +184,7 @@ const styles = StyleSheet.create({
         height: 30,
         marginLeft: 8
     }, selectText : {
-        fontSize: 12
+        fontSize: hp('1.5%')
     }
 })
 
